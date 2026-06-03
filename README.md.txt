@@ -1,0 +1,1 @@
+This is my own personal project to import a .csv bank statement and import it easily into a spreadsheet so the only thing I need to import is a dropdown for category. It is as simple as importing a single .csv file into the <data> folder. The application will then copy all the aspects (many of which are changed for easier identification in the spreadsheet) into the spreadsheet.
