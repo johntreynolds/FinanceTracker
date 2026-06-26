@@ -14,7 +14,7 @@ public class FinanceAppMain {
         ReadBankCSV bankReader = new ReadBankCSV("data");
 
         try {
-            ArrayList<Transaction> masterList = bankReader.readTextFile();
+            ArrayList<Transaction> masterList = bankReader.collectTransactions();
             StringBuilder clipboardString = new StringBuilder();
             
             for (Transaction t : masterList) {

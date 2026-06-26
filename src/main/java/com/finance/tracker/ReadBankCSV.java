@@ -1,9 +1,11 @@
 package com.finance.tracker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Collections;
 
 public class ReadBankCSV
 	{
@@ -30,20 +32,19 @@ public class ReadBankCSV
 				return this.folderPath + "/" + onlyFileName;
 			}
 
-		public ArrayList<Transaction> readTextFile() throws IOException
+		public String findAccountType() throws IOException
 			{
-				ArrayList <Transaction> transactionData = new ArrayList <Transaction>();
-				String fileName = findCSVName();
+
 				String accountType = "";
-				if (fileName.toLowerCase().contains("savings"))
+				if (findCSVName().toLowerCase().contains("savings"))
 					{
 						accountType = "Savings";
 					}
-				else if (fileName.toLowerCase().contains("checking"))
+				else if (findCSVName().toLowerCase().contains("checking"))
 					{
 						accountType = "Checking";
 					}
-				else if (fileName.toLowerCase().contains("credit"))
+				else if (findCSVName().toLowerCase().contains("credit"))
 					{
 						accountType = "Credit";
 					}
@@ -51,13 +52,20 @@ public class ReadBankCSV
 					{
 						accountType = "Null";
 					}
-				
-				Scanner fileReader = new Scanner(new File(fileName));
+				return accountType;
+			}
+
+		public ArrayList<Transaction> collectTransactions() throws IOException
+			{
+
+				ArrayList<Transaction> transactionData = new ArrayList<Transaction>();
+				Scanner fileReader = new Scanner(new File(findCSVName()));
 				while (fileReader.hasNextLine())
 					{
 						String data = fileReader.nextLine();
 						String[] dataSplit = data.split(",");
-						String date = dataSplit[0].substring(1 , 9);
+						String date = dataSplit[0].substring(5, 7) + "/" + dataSplit[0].substring(8) + "/"
+								+ dataSplit[0].substring(0, 4);
 						String info = "";
 						if (dataSplit[1].length() < 20)
 							{
@@ -67,15 +75,16 @@ public class ReadBankCSV
 							{
 								info = dataSplit[1].substring(6, 20);
 							}
-						double amount = Double.parseDouble(dataSplit[3].substring(1));
-						if (!dataSplit[3].contains("+"))
+						double amount = Double.parseDouble(dataSplit[2].substring(1));
+
+						if (dataSplit[2].contains("-"))
 							{
-								transactionData.add(new Transaction(date, info, amount, accountType));
+								transactionData.add(new Transaction(date, info, amount, findAccountType()));
 							}
-						
-						
+
 					}
 				
+				Collections.reverse(transactionData);
 				fileReader.close();
 				return transactionData;
 			}
